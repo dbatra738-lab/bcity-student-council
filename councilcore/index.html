@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Council Core | BCM Basant City</title>
+<link rel="stylesheet" href="style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div id="loginScreen" class="login-screen">
+  <div class="login-card">
+    <div class="brand-mark">CC</div>
+    <h1>Council Core</h1>
+    <p class="login-subtitle">BCM Basant City Student Council</p>
+    <form id="loginForm">
+      <div class="input-group"><label>Username</label><input id="username" required placeholder="Enter username"></div>
+      <div class="input-group"><label>Password</label><input id="password" type="password" required placeholder="Enter password"></div>
+      <div class="input-group"><label>Access Level</label>
+        <select id="loginRole"><option value="student">Student</option><option value="admin">Administrator</option></select>
+      </div>
+      <button class="primary-btn full-width">Sign In</button>
+    </form>
+    <div class="demo-login"><strong>Demo credentials</strong><br>Admin: <b>admin</b> / <b>admin123</b><br>Student: <b>student</b> / <b>student123</b></div>
+  </div>
+</div>
+
+<div id="app" class="app hidden">
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-mark small">CC</div>
+    <div><strong>Council Core</strong><span>BCM Basant City</span></div>
+  </div>
+  <nav class="sidebar-nav">
+    <button class="nav-item active" data-section="dashboard">⌂ <span>Dashboard</span></button>
+    <button class="nav-item" data-section="duties">✓ <span>Duty Allocator</span></button>
+    <button class="nav-item" data-section="students">♙ <span>Students</span></button>
+    <button class="nav-item" data-section="houses">◆ <span>Houses</span></button>
+    <button class="nav-item" data-section="notices">▤ <span>Notice Board</span></button>
+    <button class="nav-item admin-only" data-section="logs">◷ <span>Edit Logs</span></button>
+  </nav>
+  <div class="sidebar-bottom">
+    <div class="user-mini"><div class="avatar" id="userAvatar">A</div><div><strong id="sidebarUsername">Admin</strong><span id="sidebarRole">Administrator</span></div></div>
+    <button id="logoutBtn" class="logout-btn">Logout</button>
+  </div>
+</aside>
+
+<main class="main">
+<header class="topbar">
+  <div><p class="eyebrow">BCM BASANT CITY</p><h2 id="pageTitle">Dashboard</h2></div>
+  <div class="topbar-right"><div id="currentDate" class="date-display"></div><div class="top-avatar" id="topAvatar">A</div></div>
+</header>
+
+<section id="dashboard" class="page-section active-section">
+  <div class="welcome-banner"><div><p class="eyebrow">STUDENT COUNCIL MANAGEMENT</p><h1>Welcome back, <span id="welcomeName">Admin</span>.</h1><p>Manage council duties, students, houses and important notices from one central platform.</p></div><div class="banner-symbol">CC</div></div>
+  <div class="stats-grid">
+    <div class="stat-card"><span class="stat-label">TOTAL COUNCIL</span><strong id="totalStudents">0</strong><small>All council members</small></div>
+    <div class="stat-card"><span class="stat-label">ACTIVE DUTIES</span><strong id="totalDuties">0</strong><small>Currently allocated</small></div>
+    <div class="stat-card"><span class="stat-label">HOUSES</span><strong id="totalHouses">5</strong><small>Cabinet + four houses</small></div>
+    <div class="stat-card"><span class="stat-label">NOTICES</span><strong id="totalNotices">0</strong><small>Published notices</small></div>
+  </div>
+  <div class="dashboard-grid">
+    <div class="panel"><div class="panel-header"><div><p class="eyebrow">LATEST</p><h3>Notice Board</h3></div><button class="text-btn" onclick="showSection('notices')">View all →</button></div><div id="dashboardNotices"></div></div>
+    <div class="panel"><div class="panel-header"><div><p class="eyebrow">TODAY</p><h3>Duty Overview</h3></div><button class="text-btn" onclick="showSection('duties')">Manage →</button></div><div id="dashboardDuties"></div></div>
+  </div>
+</section>
+
+<section id="duties" class="page-section">
+  <div class="section-heading"><div><p class="eyebrow">OPERATIONS</p><h1>Duty Allocator</h1><p>Allocate council responsibilities to students.</p></div><button class="primary-btn admin-only" onclick="openDutyModal()">+ Allocate Duty</button></div>
+  <div class="filter-bar"><input id="dutySearch" type="search" placeholder="Search duties..."><select id="dutyFilter"><option value="all">All Duties</option><option>Pending</option><option>Active</option><option>Completed</option></select></div>
+  <div class="table-container"><table><thead><tr><th>Student</th><th>House</th><th>Duty</th><th>Date</th><th>Location</th><th>Status</th><th>Action</th></tr></thead><tbody id="dutiesTable"></tbody></table></div>
+</section>
+
+<section id="students" class="page-section">
+  <div class="section-heading"><div><p class="eyebrow">DIRECTORY</p><h1>Student Council</h1><p>Complete council directory, including cabinet and house members.</p></div><button class="primary-btn admin-only" onclick="openStudentModal()">+ Add Student</button></div>
+  <div class="filter-bar"><input id="studentSearch" type="search" placeholder="Search by name, class or post..."><select id="houseFilter"><option value="all">All Houses</option><option>Cabinet</option><option>Red</option><option>Blue</option><option>Orange</option><option>Yellow</option></select><select id="transportFilter"><option value="all">All Conveyance</option><option>School Bus</option><option>Car</option><option>Two Wheeler</option><option>Walking</option><option>Other</option></select></div>
+  <div id="studentsGrid" class="students-grid"></div>
+</section>
+
+<section id="houses" class="page-section">
+  <div class="section-heading"><div><p class="eyebrow">CLASSIFICATION</p><h1>House Management</h1><p>Cabinet and house-wise council classification.</p></div></div>
+  <div class="houses-grid" id="housesGrid"></div>
+</section>
+
+<section id="notices" class="page-section">
+  <div class="section-heading"><div><p class="eyebrow">COMMUNICATION</p><h1>Notice Board</h1><p>Important announcements for the Student Council.</p></div><button class="primary-btn admin-only" onclick="openNoticeModal()">+ Publish Notice</button></div>
+  <div id="noticesGrid" class="notices-grid"></div>
+</section>
+
+<section id="logs" class="page-section">
+  <div class="section-heading"><div><p class="eyebrow">AUDIT TRAIL</p><h1>Edit Logs</h1><p>Monitor changes made to Council Core.</p></div><button class="secondary-btn" onclick="clearLogs()">Clear Logs</button></div>
+  <div class="table-container"><table><thead><tr><th>Date & Time</th><th>User</th><th>Action</th><th>Details</th></tr></thead><tbody id="logsTable"></tbody></table></div>
+</section>
+</main>
+</div>
+
+<div id="dutyModal" class="modal"><div class="modal-card">
+  <div class="modal-header"><div><p class="eyebrow">NEW RECORD</p><h2>Allocate Duty</h2></div><button class="close-btn" onclick="closeModal('dutyModal')">×</button></div>
+  <form id="dutyForm"><div class="form-grid">
+    <div class="input-group"><label>Student</label><select id="dutyStudent" required></select></div>
+    <div class="input-group"><label>Duty</label><input id="dutyName" required placeholder="e.g. Morning Assembly"></div>
+    <div class="input-group"><label>Date</label><input id="dutyDate" type="date" required></div>
+    <div class="input-group"><label>Location</label><input id="dutyLocation" required placeholder="e.g. Main Gate"></div>
+    <div class="input-group"><label>Status</label><select id="dutyStatus"><option>Pending</option><option>Active</option><option>Completed</option></select></div>
+  </div><div class="modal-actions"><button type="button" class="secondary-btn" onclick="closeModal('dutyModal')">Cancel</button><button class="primary-btn">Allocate Duty</button></div></form>
+</div></div>
+
+<div id="studentModal" class="modal"><div class="modal-card">
+  <div class="modal-header"><div><p class="eyebrow">DIRECTORY</p><h2>Add Student</h2></div><button class="close-btn" onclick="closeModal('studentModal')">×</button></div>
+  <form id="studentForm"><div class="form-grid">
+    <div class="input-group"><label>Full Name</label><input id="studentName" required></div>
+    <div class="input-group"><label>Class</label><input id="studentClass" required></div>
+    <div class="input-group"><label>Section</label><input id="studentSection"></div>
+    <div class="input-group"><label>Post</label><input id="studentPost" required></div>
+    <div class="input-group"><label>House</label><select id="studentHouse"><option>Cabinet</option><option>Red</option><option>Blue</option><option>Orange</option><option>Yellow</option></select></div>
+    <div class="input-group"><label>Mode of Conveyance</label><select id="studentTransport"><option>School Bus</option><option>Car</option><option>Two Wheeler</option><option>Walking</option><option>Other</option></select></div>
+  </div><div class="modal-actions"><button type="button" class="secondary-btn" onclick="closeModal('studentModal')">Cancel</button><button class="primary-btn">Add Student</button></div></form>
+</div></div>
+
+<div id="noticeModal" class="modal"><div class="modal-card">
+  <div class="modal-header"><div><p class="eyebrow">COMMUNICATION</p><h2>Publish Notice</h2></div><button class="close-btn" onclick="closeModal('noticeModal')">×</button></div>
+  <form id="noticeForm"><div class="input-group"><label>Notice Title</label><input id="noticeTitle" required></div><div class="input-group"><label>Notice Content</label><textarea id="noticeContent" rows="6" required></textarea></div><div class="input-group"><label>Priority</label><select id="noticePriority"><option>Normal</option><option>Important</option><option>Urgent</option></select></div><div class="modal-actions"><button type="button" class="secondary-btn" onclick="closeModal('noticeModal')">Cancel</button><button class="primary-btn">Publish Notice</button></div></form>
+</div></div>
+
+<div id="toast" class="toast"></div>
+<script src="script.js"></script>
+</body>
+</html>
